@@ -1,5 +1,5 @@
 from numbers import Number
-
+from numbers import Integral
 
 class Polynomial:
 
@@ -50,3 +50,61 @@ class Polynomial:
 
     def __radd__(self, other):
         return self + other
+
+    def __sub__(self, other):
+
+        if isinstance(other, Polynomial):
+            list1 = [-n for n in list(other.coefficients)]
+            temp = Polynomial(tuple(list1))
+            return self+temp
+
+        elif isinstance(other, Number):
+            return Polynomial((self.coefficients[0] - other,) + self.coefficients[1:])
+
+        else:
+            return NotImplemented
+    
+    def __mul__(self, other):
+
+        if isinstance(other, Number):
+            list1 = [a * other for a in list(self.coefficients)]
+            return Polynomial(tuple(list1))
+
+        elif isinstance(other, Polynomial) and isinstance(self, Polynomial):
+            deg_1 = len(self.coefficients) - 1
+            deg_2 = len(other.coefficients) - 1
+            ans = [0] * (deg_1 + deg_2 + 1)
+            for i in range(deg_1 + 1):
+                for j in range(deg_2 + 1):
+                    ans[i+j] += self.coefficients[i] * other.coefficients[j]
+            return Polynomial(tuple((ans)))
+
+        else:
+            return NotImplemented
+
+    def __rmul__(self, other):
+        return self * other
+
+    def __rsub__(self, other):
+        return -1 * (self-other)
+    
+    def __pow__(self, other):
+        a = self
+        if isinstance(other, Integral):
+            for i in range(other-1):
+                a = a*self
+            return a
+        else:
+            return NotImplemented
+    
+    def __call__(self, other):
+        a = 0
+        for i in range(Polynomial.degree(self) + 1):
+            if self.coefficients[i]>0:
+                a += self.coefficients[i] * other ** i
+            if self.coefficients[i]<0:
+                a -= self.coefficients[i] * other ** i
+        return a
+
+
+
