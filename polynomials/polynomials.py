@@ -7,7 +7,10 @@ class Polynomial:
         self.coefficients = coefs
 
     def degree(self):
-        return len(self.coefficients) - 1
+        if isinstance(self.coefficients, Number):
+            return 0
+        else:
+            return len(self.coefficients) - 1
 
     def __str__(self):
         coefs = self.coefficients
@@ -91,9 +94,12 @@ class Polynomial:
     def __pow__(self, other):
         a = self
         if isinstance(other, Integral):
-            for i in range(other-1):
-                a = a*self
-            return a
+            if other == 0:
+                return Polynomial((1,))
+            else:
+                for i in range(other-1):
+                    a = a*self
+                return a
         else:
             return NotImplemented
     
@@ -106,5 +112,15 @@ class Polynomial:
                 a -= self.coefficients[i] * other ** i
         return a
 
+    def dx(self):
+        a = list(self.coefficients)
+        x = Polynomial((0,1))
+        ans = Polynomial((0,))
 
+        for i in range(Polynomial.degree(self)):
+            ans = ans + a[i+1] * (i+1) * x ** i
+        return ans 
+
+def derivative(p):
+    return p.dx()
 
