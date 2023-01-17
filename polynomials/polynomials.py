@@ -1,6 +1,7 @@
 from numbers import Number
 from numbers import Integral
 
+
 class Polynomial:
 
     def __init__(self, coefs):
